@@ -43,10 +43,11 @@ view: vw_lhp_epicor_schuemann_barrels {
   }
 
   dimension_group: part_tran_tran {
-    label: "Transaction"
+    label: "Transaction Date"
     group_label: "Part Transaction"
+    description: "Part Transcation Date"
     type: time
-    timeframes: [raw, time, date, week, month, quarter, year]
+    timeframes: [raw, date, day_of_month, day_of_year, week, month, month_name, month_num, quarter, year]
     sql: ${TABLE}.PartTran_TranDate ;;
   }
 

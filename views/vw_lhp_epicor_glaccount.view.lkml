@@ -2,8 +2,6 @@ view: vw_lhp_epicor_glaccount {
   sql_table_name: dbo.vw_LHP_EPICOR_GLAccount ;;
 
   # --- Primary Key ---
-  # Define a primary key for better join performance and query accuracy.
-  # Adjust the SQL CONCAT fields to form a unique combination for this view.
   dimension: pk_glaccount {
     primary_key: yes
     hidden: yes

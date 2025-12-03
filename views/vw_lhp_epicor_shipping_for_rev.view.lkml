@@ -19,10 +19,10 @@ view: vw_lhp_epicor_shipping_for_rev {
   }
 
   dimension_group: invc_head_invoice {
-    label: "Invoice"
+    label: "Invoice Date"
     description: "The date the invoice was created."
     type: time
-    timeframes: [raw, time, date, week, month, quarter, year]
+    timeframes: [raw, date, day_of_month, day_of_year, week, month, month_name, month_num, quarter, year]
     sql: ${TABLE}.InvcHead_InvoiceDate ;;
   }
 
@@ -41,12 +41,20 @@ view: vw_lhp_epicor_shipping_for_rev {
     drill_fields: [invc_dtl_part_num, prod_grup_description]
   }
 
+  measure: count_invoices {
+    label: "Invoice Count"
+    type: count_distinct
+    sql: ${pk_shipping} ;;
+    drill_fields: [invc_dtl_part_num, prod_grup_description]
+  }
+
   measure: total_extended_price {
     label: "Total Extended Price"
     description: "Total calculated extended price."
     type: sum
     sql: ${TABLE}.Calculated_ExtendedPriceCalc ;;
     value_format_name: usd
+    drill_fields: [invc_dtl_part_num, prod_grup_description]
   }
 
   measure: total_shipped_quantity {
@@ -55,6 +63,7 @@ view: vw_lhp_epicor_shipping_for_rev {
     type: sum
     sql: ${TABLE}.InvcDtl_OurShipQty ;;
     value_format_name: decimal_0
+    drill_fields: [invc_dtl_part_num, prod_grup_description]
   }
 
   measure: average_extended_price {
@@ -62,5 +71,6 @@ view: vw_lhp_epicor_shipping_for_rev {
     type: average
     sql: ${TABLE}.Calculated_ExtendedPriceCalc ;;
     value_format_name: usd
+    drill_fields: [invc_dtl_part_num, prod_grup_description]
   }
 }
