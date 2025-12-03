@@ -10,7 +10,7 @@ persist_with: StaccatoDW_LHP_default_datagroup
 
 explore: vw_lhp_epicor_glaccount {
   label: "Precision GL Account"
-  description: "LHP EPICOR Information"
+  description: "LHP 2024 EPICOR Information"
   group_label: "Staccato Precision"
 }
 
