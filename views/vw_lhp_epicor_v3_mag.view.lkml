@@ -1,36 +1,43 @@
-# The name of this view in Looker is "Vw Lhp Epicor V3 Mag"
 view: vw_lhp_epicor_v3_mag {
-  # The sql_table_name parameter indicates the underlying database table
-  # to be used for all fields in this view.
   sql_table_name: dbo.vw_LHP_EPICOR_V3_Mag ;;
 
-  # No primary key is defined for this view. In order to join this view in an Explore,
-  # define primary_key: yes on a dimension that has no repeated values.
-
-    # Here's what a typical dimension looks like in LookML.
-    # A dimension is a groupable field that can be used to filter query results.
-    # This dimension will be called "Invc Dtl Our Ship Qty" in Explore.
-
-  dimension: invc_dtl_our_ship_qty {
-    type: number
-    sql: ${TABLE}.InvcDtl_OurShipQty ;;
-  }
+# --- Dimensions ---
 
   dimension: month {
+    label: "Month"
+    description: "The month associated with the production or shipping record."
     type: string
     sql: ${TABLE}.MONTH ;;
   }
 
-  dimension: target_v3 {
-    type: number
-    sql: ${TABLE}.Target_V3 ;;
+  # --- Measures ---
+
+  measure: count {
+    label: "Count"
+    type: count
   }
 
-  dimension: units_produced {
-    type: number
-    sql: ${TABLE}.Units_Produced ;;
+  measure: total_shipped_quantity {
+    label: "Total Shipped Quantity"
+    description: "Sum of shipped quantities."
+    type: sum
+    sql: ${TABLE}.InvcDtl_OurShipQty ;;
+    value_format_name: decimal_0
   }
-  measure: count {
-    type: count
+
+  measure: total_target_v3 {
+    label: "Total Target V3"
+    description: "Sum of V3 targets."
+    type: sum
+    sql: ${TABLE}.Target_V3 ;;
+    value_format_name: decimal_0
+  }
+
+  measure: total_units_produced {
+    label: "Total Units Produced"
+    description: "Sum of units produced."
+    type: sum
+    sql: ${TABLE}.Units_Produced ;;
+    value_format_name: decimal_0
   }
 }

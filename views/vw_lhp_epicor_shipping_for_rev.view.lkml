@@ -1,44 +1,66 @@
-# The name of this view in Looker is "Vw Lhp Epicor Shipping for Rev"
 view: vw_lhp_epicor_shipping_for_rev {
-  # The sql_table_name parameter indicates the underlying database table
-  # to be used for all fields in this view.
   sql_table_name: dbo.vw_LHP_EPICOR_ShippingForRev ;;
 
-  # No primary key is defined for this view. In order to join this view in an Explore,
-  # define primary_key: yes on a dimension that has no repeated values.
-
-    # Here's what a typical dimension looks like in LookML.
-    # A dimension is a groupable field that can be used to filter query results.
-    # This dimension will be called "Calculated Extended Price Calc" in Explore.
-
-  dimension: calculated_extended_price_calc {
-    type: number
-    sql: ${TABLE}.Calculated_ExtendedPriceCalc ;;
+# --- Primary Key ---
+  dimension: pk_shipping {
+    primary_key: yes
+    hidden: yes
+    type: string
+    sql: CONCAT(${invc_dtl_part_num}, '-', ${invc_head_invoice_raw}) ;;
   }
 
-  dimension: invc_dtl_our_ship_qty {
-    type: number
-    sql: ${TABLE}.InvcDtl_OurShipQty ;;
-  }
+  # --- Dimensions ---
 
   dimension: invc_dtl_part_num {
+    label: "Part Number"
+    description: "The specific part number on the invoice detail."
     type: string
     sql: ${TABLE}.InvcDtl_PartNum ;;
   }
-  # Dates and timestamps can be represented in Looker using a dimension group of type: time.
-  # Looker converts dates and timestamps to the specified timeframes within the dimension group.
 
   dimension_group: invc_head_invoice {
+    label: "Invoice"
+    description: "The date the invoice was created."
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
     sql: ${TABLE}.InvcHead_InvoiceDate ;;
   }
 
   dimension: prod_grup_description {
+    label: "Product Group"
+    description: "Description of the product group associated with the item."
     type: string
     sql: ${TABLE}.ProdGrup_Description ;;
   }
+
+  # --- Measures ---
+
   measure: count {
+    label: "Count"
     type: count
+    drill_fields: [invc_dtl_part_num, prod_grup_description]
+  }
+
+  measure: total_extended_price {
+    label: "Total Extended Price"
+    description: "Total calculated extended price."
+    type: sum
+    sql: ${TABLE}.Calculated_ExtendedPriceCalc ;;
+    value_format_name: usd
+  }
+
+  measure: total_shipped_quantity {
+    label: "Total Shipped Quantity"
+    description: "Total quantity shipped from invoice details."
+    type: sum
+    sql: ${TABLE}.InvcDtl_OurShipQty ;;
+    value_format_name: decimal_0
+  }
+
+  measure: average_extended_price {
+    label: "Average Extended Price"
+    type: average
+    sql: ${TABLE}.Calculated_ExtendedPriceCalc ;;
+    value_format_name: usd
   }
 }
