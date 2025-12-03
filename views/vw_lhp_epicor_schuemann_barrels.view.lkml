@@ -16,11 +16,13 @@ view: vw_lhp_epicor_schuemann_barrels {
     description: "The commercial sub-brand of the part."
     type: string
     sql: ${TABLE}.Part_CommercialSubBrand ;;
+    hidden: yes
   }
 
   dimension: prod_grup_description {
     label: "Product Group"
-    description: "Description of the product group."
+    group_label: "Part Transaction"
+    description: "Description of the product group of the part."
     type: string
     sql: ${TABLE}.ProdGrup_Description ;;
   }
@@ -29,22 +31,21 @@ view: vw_lhp_epicor_schuemann_barrels {
   dimension: part_tran_bin_num {
     label: "Bin Number"
     group_label: "Part Transaction"
-    description: "The bin number where the transaction occurred."
+    description: "The bin number where the part was stored."
     type: string
     sql: ${TABLE}.PartTran_BinNum ;;
   }
 
   dimension: part_tran_part_num {
     label: "Part Number"
-    group_label: "Part Transaction"
-    description: "The part number involved in the transaction."
+    description: "The part number that was produced."
     type: string
     sql: ${TABLE}.PartTran_PartNum ;;
   }
 
   dimension_group: part_tran_tran {
     label: "Transaction Date"
-    group_label: "Part Transaction"
+    group_label: "Date"
     description: "Part Transcation Date"
     type: time
     timeframes: [raw, date, day_of_month, day_of_year, week, month, month_name, month_num, quarter, year]
@@ -54,7 +55,7 @@ view: vw_lhp_epicor_schuemann_barrels {
   dimension: part_tran_tran_type {
     label: "Transaction Type"
     group_label: "Part Transaction"
-    description: "The type of transaction (e.g., PUR-STK)."
+    description: "The type of transaction (e.g., MFG-STK)."
     type: string
     sql: ${TABLE}.PartTran_TranType ;;
   }
@@ -64,7 +65,7 @@ view: vw_lhp_epicor_schuemann_barrels {
   measure: count {
     label: "Count"
     type: count
-    drill_fields: [part_tran_part_num, prod_grup_description]
+    drill_fields: [part_tran_tran_date, part_tran_part_num]
   }
 
   measure: total_units_produced {
@@ -73,6 +74,7 @@ view: vw_lhp_epicor_schuemann_barrels {
     type: sum
     sql: ${TABLE}.Units_Produced ;;
     value_format_name: decimal_0
+    drill_fields: [part_tran_tran_date, part_tran_part_num, total_extended_cost]
   }
 
   measure: total_extended_cost {
@@ -82,6 +84,7 @@ view: vw_lhp_epicor_schuemann_barrels {
     # Casting to number as original view had this as string
     sql: CAST(${TABLE}.PartTran_ExtCost AS DECIMAL(18,2)) ;;
     value_format_name: usd
+    drill_fields: [part_tran_tran_date, part_tran_part_num]
   }
 
   measure: average_material_unit_cost {
@@ -91,5 +94,6 @@ view: vw_lhp_epicor_schuemann_barrels {
     # Casting to number as original view had this as string
     sql: CAST(${TABLE}.PartTran_MtlUnitCost AS DECIMAL(18,2)) ;;
     value_format_name: usd
+    drill_fields: [part_tran_tran_date, part_tran_part_num]
   }
 }
